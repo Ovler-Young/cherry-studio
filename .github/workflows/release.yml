@@ -63,7 +63,7 @@ jobs:
         run: yarn install
 
       - name: Build Linux
-        if: matrix.os == 'macos-latest' && secrets.CSC_LINK && secrets.CSC_KEY_PASSWORD
+        if: matrix.os == 'ubuntu-latest'
         run: |
           yarn build:npm linux
           yarn build:linux
@@ -73,7 +73,11 @@ jobs:
           RENDERER_VITE_AIHUBMIX_SECRET: ${{ vars.RENDERER_VITE_AIHUBMIX_SECRET }}
 
       - name: Build Mac
-        if: matrix.os == 'macos-latest'
+        if: ${{ 
+            matrix.os == 'macos-latest' && 
+            secrets.CSC_LINK != '' &&
+            secrets.CSC_KEY_PASSWORD != ''
+          }}
         run: |
           yarn build:npm mac
           yarn build:mac
