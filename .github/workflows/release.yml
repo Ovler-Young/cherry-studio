@@ -72,13 +72,13 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RENDERER_VITE_AIHUBMIX_SECRET: ${{ vars.RENDERER_VITE_AIHUBMIX_SECRET }}
 
-      - name: Build Mac
-        if: ${{ 
-            matrix.os == 'macos-latest' && 
-            secrets.CSC_LINK != '' &&
-            secrets.CSC_KEY_PASSWORD != ''
-          }}
+      - if: matrix.os == 'macos-latest'
         run: |
+          if [[ -z "${CSC_LINK}" ]] || [[ -z "${CSC_KEY_PASSWORD}" ]]; then
+            echo "Missing required secrets: CSC_LINK or CSC_KEY_PASSWORD"
+            exit 1
+          fi
+          echo "Secrets verified successfully"
           yarn build:npm mac
           yarn build:mac
         env:
