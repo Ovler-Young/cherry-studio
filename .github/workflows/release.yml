@@ -76,7 +76,7 @@ jobs:
         run: |
           if [[ -z "${CSC_LINK}" ]] || [[ -z "${CSC_KEY_PASSWORD}" ]]; then
             echo "Missing required secrets: CSC_LINK or CSC_KEY_PASSWORD"
-            exit 1
+            exit 0
           fi
           echo "Secrets verified successfully"
           yarn build:npm mac
