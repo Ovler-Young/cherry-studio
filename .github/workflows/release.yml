@@ -6,7 +6,7 @@ on:
     inputs:
       tag:
         description: "Release tag (e.g. v1.1.0)"
-        required: true
+        required: false
         default: "v1.1.0"
 
 permissions:
@@ -55,22 +55,15 @@ jobs:
         id: get-version
         shell: bash
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.tag }}" != "" ]; then
-            VERSION="${{ github.event.inputs.tag }}"
-            VERSION=${VERSION#v}
-            echo "Running workflow dispatch with tag: $VERSION"
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
-            echo "is_release=true" >> $GITHUB_OUTPUT
-            echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             VERSION=${GITHUB_REF#refs/tags/v}
             echo "Running on tag: v$VERSION"
             echo "version=$VERSION" >> $GITHUB_OUTPUT
             echo "is_release=true" >> $GITHUB_OUTPUT
             echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
           else
-            # For regular commits, use the current timestamp as version
-            VERSION="dev-$(date +'%Y%m%d%H%M%S')"
+            # For regular commits, use the current timestamp and commit hash as the version
+            VERSION="dev-$(echo $GITHUB_SHA | cut -c1-8)-$(date +'%Y%m%d%H%M%S')"
             echo "Running on commit: $VERSION"
             echo "version=$VERSION" >> $GITHUB_OUTPUT
             echo "is_release=false" >> $GITHUB_OUTPUT
@@ -144,7 +137,7 @@ jobs:
 
   release:
     needs: build
-    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+    if: startsWith(github.ref, 'refs/tags/') || (github.event_name == 'workflow_dispatch' && github.event.inputs.tag)
     runs-on: ubuntu-latest
     steps:
       - name: Get release tag
@@ -172,6 +165,7 @@ jobs:
         with:
           draft: true
           allowUpdates: true
+          prerelease: true
           makeLatest: false
           tag: ${{ steps.get-tag.outputs.tag }}
           artifacts: "release/*"
