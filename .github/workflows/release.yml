@@ -21,13 +21,30 @@ jobs:
         include:
           - os: windows-latest
             platform: win
-            artifacts: "dist/Cherry-Studio-*-portable.exe,dist/Cherry-Studio-*-setup.exe,dist/Cherry-Studio-*-setup.exe.blockmap,dist/latest.yml"
+            artifacts: |
+              dist/Cherry-Studio-*-portable.exe
+              dist/Cherry-Studio-*-setup.exe
+              dist/Cherry-Studio-*-setup.exe.blockmap
+              dist/latest.yml
           - os: ubuntu-latest
             platform: linux
-            artifacts: "dist/Cherry-Studio-*-x86_64.AppImage,dist/Cherry-Studio-*-arm64.AppImage,dist/latest-linux.yml,dist/latest-linux-arm64.yml"
+            artifacts: |
+              dist/Cherry-Studio-*-x86_64.AppImage
+              dist/Cherry-Studio-*-arm64.AppImage
+              dist/latest-linux.yml
+              dist/latest-linux-arm64.yml
           - os: macos-latest
             platform: mac
-            artifacts: "dist/Cherry-Studio-*-x64.dmg,dist/Cherry-Studio-*-x64.dmg.blockmap,dist/Cherry-Studio-*-x64.zip,dist/Cherry-Studio-*-x64.zip.blockmap,dist/Cherry-Studio-*-arm64.dmg,dist/Cherry-Studio-*-arm64.dmg.blockmap,dist/Cherry-Studio-*-arm64.zip,dist/Cherry-Studio-*-arm64.zip.blockmap,dist/latest-mac.yml"
+            artifacts: |
+              dist/Cherry-Studio-*-x64.dmg
+              dist/Cherry-Studio-*-x64.dmg.blockmap
+              dist/Cherry-Studio-*-x64.zip
+              dist/Cherry-Studio-*-x64.zip.blockmap
+              dist/Cherry-Studio-*-arm64.dmg
+              dist/Cherry-Studio-*-arm64.dmg.blockmap
+              dist/Cherry-Studio-*-arm64.zip
+              dist/Cherry-Studio-*-arm64.zip.blockmap
+              dist/latest-mac.yml
       fail-fast: false
 
     steps:
