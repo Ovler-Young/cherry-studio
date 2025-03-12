@@ -110,6 +110,7 @@ jobs:
         run: |
           if [[ -z "${CSC_LINK}" ]] || [[ -z "${CSC_KEY_PASSWORD}" ]]; then
             echo "Missing required secrets: CSC_LINK or CSC_KEY_PASSWORD"
+            mkdir -p dist
             exit 0
           fi
           yarn build:npm mac
@@ -131,6 +132,7 @@ jobs:
           RENDERER_VITE_AIHUBMIX_SECRET: ${{ vars.RENDERER_VITE_AIHUBMIX_SECRET }}
 
       - name: Replace spaces in filenames
+        if: 
         run: node scripts/replace-spaces.js
 
       - name: Upload artifacts
