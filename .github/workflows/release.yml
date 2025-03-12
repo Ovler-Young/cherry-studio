@@ -108,6 +108,10 @@ jobs:
       - name: Build Mac
         if: matrix.os == 'macos-latest'
         run: |
+          if [[ -z "${CSC_LINK}" ]] || [[ -z "${CSC_KEY_PASSWORD}" ]]; then
+            echo "Missing required secrets: CSC_LINK or CSC_KEY_PASSWORD"
+            exit 0
+          fi
           yarn build:npm mac
           yarn build:mac
         env:
