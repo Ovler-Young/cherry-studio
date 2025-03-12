@@ -55,19 +55,16 @@ jobs:
         id: get-version
         shell: bash
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             VERSION=${GITHUB_REF#refs/tags/v}
             echo "Running on tag: v$VERSION"
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
-            echo "is_release=true" >> $GITHUB_OUTPUT
             echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
           else
-            # For regular commits, use the current timestamp and commit hash as the version
             VERSION="dev-$(echo $GITHUB_SHA | cut -c1-8)-$(date +'%Y%m%d%H%M%S')"
             echo "Running on commit: $VERSION"
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
-            echo "is_release=false" >> $GITHUB_OUTPUT
-            echo "tag=" >> $GITHUB_OUTPUT
+            echo "tag=$VERSION" >> $GITHUB_OUTPUT
           fi
 
       - name: Install Node.js
@@ -138,7 +135,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: artifacts-${{ matrix.platform }}
+          name: artifacts-${{ steps.get-tag.outputs.tag }}-${{ matrix.platform }}
           path: ${{ matrix.artifacts }}
 
   release:
